@@ -30,7 +30,7 @@ export function FAQ() {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-4">
-            <AccordionTrigger>How accurate is ScanVault's detection?</AccordionTrigger>
+            <AccordionTrigger>How accurate is ScanVault&apos;s detection?</AccordionTrigger>
             <AccordionContent>
               ScanVault employs state-of-the-art machine learning models that are continuously trained and updated. While we strive for the highest accuracy, we recommend using ScanVault as a powerful tool in your overall data protection strategy, complemented by human review for critical documents.
             </AccordionContent>
