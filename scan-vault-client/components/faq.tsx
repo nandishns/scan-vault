@@ -14,7 +14,7 @@ export function FAQ() {
           <AccordionItem value="item-1">
             <AccordionTrigger>What types of files can I scan with ScanVault?</AccordionTrigger>
             <AccordionContent>
-              ScanVault supports various file formats including .txt, .pdf, .docx, and .csv. We're constantly working on expanding our supported file types to accommodate more formats.
+              ScanVault supports various file formats including .txt, .pdf, .docx, and .csv. We&apos;re constantly working on expanding our supported file types to accommodate more formats.
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
