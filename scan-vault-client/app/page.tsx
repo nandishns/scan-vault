@@ -16,7 +16,7 @@ export default function Home() {
               The AI-Powered Sensitive Data Detection Platform
             </p>
             <p className="text-lg mb-8 animate-fade-in animation-delay-400">
-              ScanVault is software aiming to revolutionize data protection. We're leveraging the power of AI to create
+              ScanVault is software aiming to revolutionize data protection. We&apos;re leveraging the power of AI to create
               <span className="font-bold"> cutting-edge sensitive data detection</span> for businesses of all sizes.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in animation-delay-600">
