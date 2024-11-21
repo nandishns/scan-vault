@@ -6,15 +6,12 @@ export function AnimatedBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    const canvas = canvasRef.current
+    const canvas = canvasRef.current ?? document.createElement('canvas')
     if (!canvas) return
 
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
     if (!ctx) return
-
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-
+   
     const particles: Particle[] = []
     const particleCount = 100
     const maxDistance = 100
