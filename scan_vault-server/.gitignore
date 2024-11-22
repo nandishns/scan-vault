@@ -116,6 +116,7 @@ yarn.lock
 *.db
 *.sqlite
 *.sqlite3
+serviceAccount.json
 
 # Backup files
 *.bak

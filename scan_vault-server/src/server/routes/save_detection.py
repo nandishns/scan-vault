@@ -2,7 +2,7 @@ from firebase_admin import firestore
 from fastapi import APIRouter
 from typing import Dict, Any
 
-from services.firebase_service import FirebaseService
+from src.services.firebase_service import FirebaseService
 
 router = APIRouter()
 
