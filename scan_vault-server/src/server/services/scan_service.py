@@ -115,7 +115,7 @@ class ScanService:
                     },
                     {
                         "role": "system",
-                        "content": AnalysisPrompts.SYSTEM_PROMPT
+                        "content": AnalysisPrompts.SYSTEM_ROLE
                     }
                 ],
                 max_tokens=1000,

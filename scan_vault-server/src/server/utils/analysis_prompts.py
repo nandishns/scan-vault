@@ -78,12 +78,13 @@ class AnalysisPrompts:
 
         For each identified item, include:
         - The specific type of sensitive information
-        - The detected value
+        - The detected value 
         - Confidence level (high, medium, low)
         - Contextual information about where/how the information was found
 
         If no sensitive information is found in a category, return an empty array for that category.
         Ensure all responses maintain proper formatting and include appropriate redaction of sensitive values.
+        Make sure not to redact the detected value. its very important.
     """
 
     SYSTEM_ROLE = "You are a data security expert specializing in identifying sensitive information."
