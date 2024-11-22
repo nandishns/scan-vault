@@ -17,7 +17,7 @@ async def scan(file: UploadFile = File(...),):
     """Endpoint to scan uploaded files."""
     try:
         results = await scan_service.scan_file(file)
-        return {"message": "File scanned successfully!", "results": results}
+        return {"message": "success", "results": results}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

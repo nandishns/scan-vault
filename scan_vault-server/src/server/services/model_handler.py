@@ -3,7 +3,7 @@ import logging
 from openai import OpenAI
 import json
 from abc import ABC, abstractmethod
-from src.server.prompts.analysis_prompts import AnalysisPrompts
+from src.server.utils.analysis_prompts import AnalysisPrompts
 from src.server.utils.json_parser import JSONParser
 
 logger = logging.getLogger(__name__)
@@ -15,13 +15,15 @@ class ModelInterface(ABC):
         """Run predictions on the provided text."""
         pass
 
+    
+@DeprecationWarning
 class SpacyModelHandler(ModelInterface):
     """Deprecated: Legacy Spacy-based model handler."""
     def __init__(self, model_path: str):
         import spacy  # Import here to make it optional
         logger.warning("SpacyModelHandler is deprecated. Please use GPTModelHandler instead.")
         self.nlp = spacy.load(model_path)
-
+    @DeprecationWarning
     def predict(self, text: str) -> List[Dict]:
         """Deprecated method using Spacy for predictions."""
         doc = self.nlp(text)

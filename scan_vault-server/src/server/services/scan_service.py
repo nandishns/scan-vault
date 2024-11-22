@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from src.server.services.model_handler import ModelHandler
 from src.server.utils.file_processor import FileProcessor
-from src.server.prompts.analysis_prompts import AnalysisPrompts
+from src.server.utils.analysis_prompts import AnalysisPrompts
 from src.server.utils.json_parser import JSONParser
 
 logger = logging.getLogger(__name__)
