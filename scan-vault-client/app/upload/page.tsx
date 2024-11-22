@@ -10,19 +10,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Loader2, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { SensitiveInfoSummary } from '@/components/sensitive-info-summary'
 import { useToast } from "@/hooks/use-toast"
-
-interface SensitiveInfo {
-  category: string;
-  type: string;
-  value: string;
-}
+import { BackendService } from '@/services/backend-service'
 
 export default function UploadPage() {
   const [file, setFile] = useState<File | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
-  const [sensitiveInfo, setSensitiveInfo] = useState<SensitiveInfo[] | null>(null);
+  const [scanResult, setScanResult] = useState<any | null>(null)
   const { toast } = useToast()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,47 +30,27 @@ export default function UploadPage() {
     e.preventDefault()
     if (!file) {
       setError("Please select a file to upload.")
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Please select a file to upload.",
-      })
       return
     }
 
     setIsLoading(true)
     setError(null)
-    setSuccess(false)
-    setSensitiveInfo(null)
+    setScanResult(null)
 
-    // Simulating file upload and scanning
-    await new Promise(resolve => setTimeout(resolve, 3000))
-
-    // For demonstration purposes, we'll randomly succeed or fail
-    if (Math.random() > 0.5) {
-      setSuccess(true)
-      setSensitiveInfo([
-        { category: "Personally Identifiable Information (PII)", type: "Social Security Number", value: "123-45-6789" },
-        { category: "Personally Identifiable Information (PII)", type: "Driver's License Number", value: "D1234567" },
-        { category: "Financial Information", type: "Credit Card Number", value: "**** **** **** 1234" },
-        { category: "Financial Information", type: "Bank Account Number", value: "*****6789" },
-        { category: "Health Information", type: "Medical Record Number", value: "MRN12345" },
-        { category: "Health Information", type: "Health Insurance ID", value: "HI987654321" }
-      ]);
+    try {
+      const result = await BackendService.scanFile(file)
+      console.log('Scan Result:', result)
+      setScanResult(result)
       toast({
         title: "Success",
         description: "File scanned successfully!",
       })
-    } else {
-      setError("An error occurred while scanning your file. Please try again.")
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "An error occurred while scanning your file. Please try again.",
-      })
+    } catch (err) {
+      console.error('Scan Error:', err)
+      setError(err instanceof Error ? err.message : "An error occurred while scanning your file.")
+    } finally {
+      setIsLoading(false)
     }
-
-    setIsLoading(false)
   }
 
   return (
@@ -88,21 +62,27 @@ export default function UploadPage() {
             <CardTitle>Choose a file to scan</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid w-full items-center gap-4 cursor-pointer">
+            <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="file">File</Label>
-                <Input id="file" type="file" onChange={handleFileChange} accept=".txt,.pdf,.docx,.csv" style={{cursor: 'pointer'}}/>
+                <Input 
+                  id="file" 
+                  type="file" 
+                  onChange={handleFileChange} 
+                  accept=".txt,.pdf,.docx,.csv,.jpg,.jpeg,.png" 
+                  className="cursor-pointer"
+                />
               </div>
               <p className="text-sm text-muted-foreground">
-                Supported formats: .txt, .pdf, .docx, .csv (Max size: 10MB)
+                Supported formats: .txt, .pdf, .docx, .csv, .jpg, .jpeg, .png (Max size: 10MB)
               </p>
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Button asChild variant="ghost" className="hover:bg-muted transition-colors">
+            <Button asChild variant="ghost">
               <Link href="/">Cancel</Link>
             </Button>
-            <Button type="submit" disabled={isLoading} className="hover:bg-gray-200 transition-colors">
+            <Button type="submit" disabled={isLoading}>
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -124,28 +104,7 @@ export default function UploadPage() {
         </Alert>
       )}
 
-      {success && (
-        <Alert className="mt-4 max-w-md mx-auto">
-          <CheckCircle2 className="h-4 w-4" />
-          <AlertTitle>Success</AlertTitle>
-          <AlertDescription>
-            File scanned successfully! 
-            <Link href="/view-files" className="underline ml-1 hover:text-primary transition-colors">
-              View results in &apos;View Scanned Files&apos;.
-            </Link>
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {success && sensitiveInfo && (
-        <SensitiveInfoSummary 
-          sensitiveInfo={sensitiveInfo} 
-          onSave={() => {
-            // Here you would typically save the data to your backend
-            console.log("Saving sensitive information summary")
-          }} 
-        />
-      )}
+      {scanResult?.results && <SensitiveInfoSummary results={scanResult.results} />}
     </div>
   )
 }

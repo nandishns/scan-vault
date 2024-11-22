@@ -41,40 +41,57 @@ class AnalysisPrompts:
            - Billing addresses
            - Digital wallet information
 
-        Please analyze the content and provide a detailed JSON response with the following structure:
+        Please analyze the content and provide a detailed list response with the following structure:
 
-        {
-            "pii": [
+          [
                 {
-                    "type": "ssn",
-                    "value": "XXX-XX-1234",
+                    "type": "full_name",
+                    "value": "John Doe",
+                    "confidence": "high", 
+                    "context": "Found in employee records",
+                    "category": "PII"
+                },
+                {
+                    "type": "phone_number",
+                    "value": "555-123-4567",
                     "confidence": "high",
-                    "context": "Found in employee records section"
-                }
-            ],
-            "phi": [
+                    "context": "Contact information section",
+                    "category": "PII"
+                },
+                {
+                    "type": "government_id",
+                    "value": "123-45-6789",
+                    "confidence": "high",
+                    "context": "ID documentation",
+                    "category": "PII"
+                },
+              
+                {
+                    "type": "pan_card",
+                    "value": "ABCDE1234F",
+                    "confidence": "high",
+                    "context": "Found in financial records",
+                    "category": "PII"
+                },
+              
                 {
                     "type": "medical_record",
                     "value": "MRN#12345",
                     "confidence": "high",
-                    "context": "Located in patient documentation"
+                    "context": "Located in patient documentation",
+                    "category": "PHI"
                 },
+              
                 {
-                    "type": "diagnosis",
-                    "value": "Type 2 Diabetes",
-                    "confidence": "medium",
-                    "context": "Mentioned in medical history"
-                }
-            ],
-            "pci": [
-                {
-                    "type": "credit_card",
-                    "value": "XXXX-XXXX-XXXX-5678",
+                    "type": "health_insurance",
+                    "value": "1234567890",
                     "confidence": "high",
-                    "context": "Found in payment section"
-                }
+                    "context": "Found in insurance documents",
+                    "category": "PCI"
+                },
+                ...
             ]
-        }
+        
 
         For each identified item, include:
         - The specific type of sensitive information
@@ -82,9 +99,11 @@ class AnalysisPrompts:
         - Confidence level (high, medium, low)
         - Contextual information about where/how the information was found
 
+
         If no sensitive information is found in a category, return an empty array for that category.
         Ensure all responses maintain proper formatting and include appropriate redaction of sensitive values.
         Make sure not to redact the detected value. its very important.
+        Dont add any other text or comments other than List response.
     """
 
     SYSTEM_ROLE = "You are a data security expert specializing in identifying sensitive information."

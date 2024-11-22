@@ -110,7 +110,6 @@ class ScanService:
                                     "detail": "high",
                                 },
                             },
-
                         ],
                     },
                     {
@@ -121,10 +120,14 @@ class ScanService:
                 max_tokens=1000,
             )
             
-            return self.json_parser.parse_gpt_response(
-                response.choices[0].message.content
-            )
-                
+            # Parse response and remove escape characters
+            content = response.choices[0].message.content.strip()
+            content = content.replace('\\n', '\n').replace('\\', '')
+            
+            # Parse the content using JSONParser
+            parsed_content = self.json_parser.parse_gpt_response(content)
+            return parsed_content
+            
         except Exception as e:
             logger.error(f"Error in GPT Vision analysis: {e}")
             return self._empty_result()

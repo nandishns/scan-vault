@@ -87,6 +87,11 @@ class GPTModelHandler(ModelInterface):
     def _flatten_results(self, results: Dict) -> List[Dict]:
         """Convert nested results into a flat list."""
         flattened = []
+        # Handle case where results is already a list
+        if isinstance(results, list):
+            return results
+            
+        # Handle dictionary case
         for category, items in results.items():
             for item in items:
                 item['category'] = category.upper()

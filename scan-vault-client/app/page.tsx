@@ -21,10 +21,10 @@ export default function Home() {
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in animation-delay-600">
               <Button asChild size="lg" variant="default" className="bg-white text-black hover:bg-gray-200 transition-colors">
-                <Link href="/upload">Get Started</Link>
+                <Link href="/upload">Scan Now!</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="bg-transparent text-white border-white hover:bg-white hover:text-black transition-colors">
-                <Link href="/docs">Learn ScanVault</Link>
+                <Link href="/docs">Docs</Link>
               </Button>
             </div>
           </div>
