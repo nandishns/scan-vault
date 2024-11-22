@@ -7,7 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Loader2, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { Loader2, AlertCircle } from 'lucide-react'
 import { SensitiveInfoSummary } from '@/components/sensitive-info-summary'
 import { useToast } from "@/hooks/use-toast"
 import { BackendService } from '@/services/backend-service'
@@ -39,7 +39,7 @@ export default function UploadPage() {
 
     try {
       const result = await BackendService.scanFile(file)
-      console.log('Scan Result:', result)
+     
       setScanResult(result)
       toast({
         title: "Success",
