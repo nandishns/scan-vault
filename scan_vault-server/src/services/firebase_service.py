@@ -19,7 +19,7 @@ class FirebaseService:
         """Initialize Firebase Admin SDK and Firestore client"""
         try:
             # Initialize Firebase Admin SDK
-            cred = credentials.Certificate("serviceAccount.json")
+            cred = credentials.Certificate("/etc/secrets/serviceAccount.json")
             firebase_admin.initialize_app(cred)
             
             # Initialize Firestore client

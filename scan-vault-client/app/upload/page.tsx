@@ -106,6 +106,7 @@ export default function UploadPage() {
             <ul className="list-disc list-inside text-sm text-muted-foreground">
               <li>File is too large</li>
               <li>File is not supported</li>
+              <li>File is corrupted or password protected</li>
             </ul>
           </div>
         </Alert>
