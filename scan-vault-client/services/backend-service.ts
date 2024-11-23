@@ -17,7 +17,7 @@ export class BackendService {
       method: 'POST',
       headers: {
         'access-token': process.env.NEXT_PUBLIC_ACCESS_TOKEN ?? '',
-        'Content-Type': 'multipart/form-data'
+     
       },
       body: formData,
     });
