@@ -54,7 +54,7 @@ export class BackendService {
     return data[0]['detections'];
   }
 
-  static async deleteResult(id: number): Promise<void> {
+  static async deleteResult(id: string): Promise<void> {
     const response = await fetch(`${API_URL}/delete-detection/${id}`, {
       method: 'DELETE',
     });

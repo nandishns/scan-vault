@@ -4,7 +4,6 @@ import os
 from PIL import Image
 import base64
 from io import BytesIO
-import json
 from openai import OpenAI
 from dotenv import load_dotenv
 
@@ -144,9 +143,5 @@ class ScanService:
         """Return empty result structure."""
         return {
             "file_name": filename,
-            "sensitive_fields": {
-                "pii": [],
-                "phi": [],
-                "pci": []
-            }
+            "sensitive_fields": []
         }

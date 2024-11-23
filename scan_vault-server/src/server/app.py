@@ -5,6 +5,7 @@ from src.utils.utils import read_markdown_file
 from src.server.routes.scan import router as scan_router
 from src.server.routes.save_detection import router as save_detection_router
 from src.server.routes.get_detections import router as get_detections_router
+from src.server.routes.delete_detection import router as delete_detection_router
 readme_content = read_markdown_file("README.md")
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -24,6 +25,7 @@ async def sync_database():
 app.include_router(scan_router, tags=["Scan"]) 
 app.include_router(save_detection_router, tags=["Save Detection"])
 app.include_router(get_detections_router, tags=["Get Detections"])
+app.include_router(delete_detection_router, tags=["Delete Detection"])
 
 origins = ["*"]
 

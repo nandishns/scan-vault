@@ -76,3 +76,10 @@ class FirebaseService:
         except Exception as e:
             logger.error(f"Error retrieving detections: {str(e)}")
             return None
+    
+    async def delete_detection(self, detection_id: str) -> None:
+        try:
+            self.db.collection('detections').document(detection_id).delete()
+        except Exception as e:
+            logger.error(f"Error deleting detection: {str(e)}")
+            raise

@@ -68,7 +68,7 @@ export default function ViewFilesPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      await BackendService.deleteResult(parseInt(id))
+      await BackendService.deleteResult(id)
       setScannedFiles(scannedFiles.filter(file => file.id !== id))
     } catch (err) {
       console.error('Failed to delete file:', err)
