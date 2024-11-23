@@ -1,5 +1,4 @@
-var API_URL = "https://scan-vault.onrender.com";
-API_URL = "http://localhost:8000";
+const API_URL = "https://scan-vault.onrender.com";
 
 export interface ScanResult {
   message: string;
