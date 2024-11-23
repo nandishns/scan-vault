@@ -30,6 +30,10 @@ Develop a robust backend service to **scan files**, extract **sensitive data** (
 
 ---
 
+## **4. System Design Diagram**
+![image](https://github.com/user-attachments/assets/bd124a80-67b6-448d-924b-2b80891853a0)
+
+
 ## **3. Tech Stack**
 
 ### **Backend Framework:**
@@ -211,48 +215,6 @@ docker run -d -p 8000:8000 --name scan-app fastapi-scan-app
 
 ### **Mock Testing**
 - Mock `Firestore` and `OpenAI API` to validate database and API interactions without external dependencies.
-
----
-
-## **Example API Flow**
-
-### **1. Scan a File**
-- **Endpoint:**
-  ```http
-  POST /scan
-  ```
-- **Request:**  
-  Upload a file (`example.pdf`).
-- **Response:**
-  ```json
-  {
-      "file_name": "example.pdf",
-      "sensitive_fields": [
-          {"field_name": "EMAIL", "value": "john.doe@example.com", "category": "PII"},
-          {"field_name": "DIAGNOSIS", "value": "Diabetes", "category": "PHI"}
-      ]
-  }
-  ```
-
-### **2. Retrieve Scan Results**
-- **Endpoint:**
-  ```http
-  GET /get-scans
-  ```
-- **Response:**
-  ```json
-  {
-      "message": "Scanned files retrieved successfully!",
-      "files": [
-          {
-              "file_name": "example.pdf",
-              "scan_results": [
-                  {"field_name": "EMAIL", "value": "john.doe@example.com", "category": "PII"}
-              ]
-          }
-      ]
-  }
-  ```
 
 ---
 
