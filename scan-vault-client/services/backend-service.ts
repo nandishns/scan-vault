@@ -1,5 +1,5 @@
 const API_URL = "https://scan-vault.onrender.com";
-const ACCESS_TOKEN = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+const ACCESS_TOKEN = process.env.NEXT_PUBLIC_ACCESS_TOKEN ?? 'zamnnn';
 
 if (!ACCESS_TOKEN) {
   console.error('Access token is not configured!');
