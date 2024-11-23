@@ -30,9 +30,11 @@ Develop a robust backend service to **scan files**, extract **sensitive data** (
 
 ---
 
-## **4. System Design Diagram**
+## **System Design Diagram**
 ![image](https://github.com/user-attachments/assets/bd124a80-67b6-448d-924b-2b80891853a0)
 
+## **Class Diagram**
+![image](https://github.com/user-attachments/assets/8ad6a33b-c203-41bd-bb30-093e563263dd)
 
 ## **3. Tech Stack**
 
