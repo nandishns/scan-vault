@@ -162,11 +162,15 @@ cd project-root
 
 ### **3. Configure Firestore**
 - Create a Firebase project and download the service account key.
-- Set the environment variable:
+- Set the environment variable for Server:
   ```bash
 SCAN_VAULT_API_KEY=
 OPENAI_API_KEY=
   ```
+- Set the environment variable for Client:
+```bash
+ACCESS_TOKEN=
+```
 
 ### **4. Configure OpenAI API**
 - Add your OpenAI API key:
