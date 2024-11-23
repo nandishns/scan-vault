@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_ENDPOINT;
+const API_URL = "https://scan-vault.onrender.com";
 
 export interface ScanResult {
   message: string;
