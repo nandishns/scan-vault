@@ -51,7 +51,7 @@ export default function ViewFilesPage() {
         const results = await BackendService.fetchSavedResults()
         const formattedResults = results.map(result => ({
           ...result,
-          createdAt: result.createdAt?.toDate?.()?.toLocaleDateString() || 'Unknown date'
+          createdAt: result.createdAt || 'Unknown date'
         }))
         setScannedFiles(formattedResults)
         setError(null)
@@ -192,6 +192,7 @@ export default function ViewFilesPage() {
             <DialogTitle>Scan Details</DialogTitle>
           </DialogHeader>
           {selectedFile && (
+            
             <>
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-4 items-center gap-4">
@@ -204,7 +205,7 @@ export default function ViewFilesPage() {
                   <Label htmlFor="uploadDate" className="text-right">
                     Upload Date
                   </Label>
-                  <Input id="uploadDate" value={new Date(selectedFile.createdAt).toISOString().split('T')[0]} className="col-span-3" readOnly />
+                  <Input id="uploadDate" value={new Date(selectedFile.createdAt).toISOString().split('T')[0]} className="col-span-3" readOnly /> selectedFile.createdAt
                 </div>
                 <div className="grid grid-cols-4 items-start gap-4">
                   <Label htmlFor="sensitiveInfo" className="text-right">

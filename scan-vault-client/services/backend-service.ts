@@ -21,7 +21,7 @@ export class BackendService {
 
     if (!response.ok) {
       throw new Error('Scan failed: ' + (await response.text()));
-    }
+    } 
 
     const data = await response.json();
     console.log('API Response:', data);

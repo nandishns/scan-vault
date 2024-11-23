@@ -45,6 +45,7 @@ class FirebaseService:
             
             # Create a new document in the detections collection
             doc_ref = self.db.collection('detections').document()
+            detection_data['id'] = doc_ref.id
             doc_ref.set(detection_data)
             
             logger.info(f"Detection saved successfully with ID: {doc_ref.id}")
