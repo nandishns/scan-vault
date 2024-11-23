@@ -24,7 +24,7 @@ export default function Home() {
                 <Link href="/upload">Scan Now!</Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="bg-transparent text-white border-white hover:bg-white hover:text-black transition-colors">
-                <Link href="/docs">Docs</Link>
+                <Link href="https://scan-vault.onrender.com/docs" target="_blank">Docs</Link>
               </Button>
             </div>
           </div>

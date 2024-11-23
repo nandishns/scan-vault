@@ -38,15 +38,13 @@ export default function RootLayout({
                   <h3 className="font-bold text-lg mb-4">ScanVault</h3>
                   <p className="text-gray-400">Safeguarding Your Sensitive Information</p>
                 </div>
-                {/* <div>
-                  <h3 className="font-bold text-lg mb-4">Quick Links</h3>
+                <div>
+                   <h3 className="font-bold text-lg mb-4">Quick Links</h3>
                   <ul className="space-y-2">
-                    <li><a href="#" className="text-gray-400 hover:text-white transition-colors">About Us</a></li>
-                    <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
-                    <li><a href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</a></li>
-                    <li><a href="#" className="text-gray-400 hover:text-white transition-colors">API Documentation</a></li>
+      
+                    <li><a href="https://scan-vault.onrender.com/docs" className="text-gray-400 hover:text-white transition-colors">API Documentation</a></li>
                   </ul>
-                </div> */}
+                </div>
                 <div>
                   <h3 className="font-bold text-lg mb-4">Contact Info</h3>
                   <p className="text-gray-400">Email: ns.nandish2003@gmail.com</p>
