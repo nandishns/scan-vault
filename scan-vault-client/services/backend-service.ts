@@ -1,4 +1,5 @@
-const API_URL = "https://scan-vault.onrender.com";
+var API_URL = "https://scan-vault.onrender.com";
+API_URL = "http://localhost:8000";
 
 export interface ScanResult {
   message: string;
@@ -13,22 +14,28 @@ export class BackendService {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await fetch(`${API_URL}/scan`, {
-      method: 'POST',
-      headers: {
-        'access-token': process.env.NEXT_PUBLIC_ACCESS_TOKEN ?? '',
-     
-      },
-      body: formData,
-    });
+    try {
+      const response = await fetch(`${API_URL}/scan`, {
+        method: 'POST',
+        headers: {
+          'access_token': process.env.NEXT_PUBLIC_ACCESS_TOKEN ?? '',
+        },
+        body: formData,
+      });
 
-    if (!response.ok) {
-      throw new Error('Scan failed: ' + (await response.text()));
-    } 
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Scan API Error:', errorData);
+        throw new Error(`Scan failed: ${JSON.stringify(errorData)}`);
+      } 
 
-    const data = await response.json();
-    console.log('API Response:', data);
-    return data;
+      const data = await response.json();
+      console.log('API Response:', data);
+      return data;
+    } catch (error) {
+      console.error('Scan request failed:', error);
+      throw error;
+    }
   }
 
   static async saveResults(scanResult: any): Promise<void> {
@@ -37,7 +44,7 @@ export class BackendService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'access-token': process.env.NEXT_PUBLIC_ACCESS_TOKEN ?? ''
+        'access_token': process.env.NEXT_PUBLIC_ACCESS_TOKEN ?? ''
       },
       body: JSON.stringify(scanResult),
     });
@@ -48,9 +55,10 @@ export class BackendService {
   }
 
   static async fetchSavedResults(): Promise<any[]> {
+  
     const response = await fetch(`${API_URL}/get-saved-detections`, {
       headers: {
-        'access-token': process.env.NEXT_PUBLIC_ACCESS_TOKEN ?? ''
+        'access_token': process.env.NEXT_PUBLIC_ACCESS_TOKEN ?? ''
       }
     });
     if (!response.ok) {
@@ -66,7 +74,7 @@ export class BackendService {
     const response = await fetch(`${API_URL}/delete-detection/${id}`, {
       method: 'DELETE',
       headers: {
-        'access-token': process.env.NEXT_PUBLIC_ACCESS_TOKEN ?? ''
+          'access-token': process.env.ACCESS_TOKEN ?? ''
       }
     });
     if (!response.ok) {

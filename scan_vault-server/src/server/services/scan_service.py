@@ -12,6 +12,7 @@ load_dotenv()
 from src.server.utils.file_processor import FileProcessor
 from src.server.utils.analysis_prompts import AnalysisPrompts
 from src.server.utils.json_parser import JSONParser
+from src.server.services.model_handler import LLMHandler
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,9 @@ class ScanService:
         """Initialize scan service with necessary components."""
         api_key = os.getenv("OPENAI_API_KEY")
         self._validate_api_key(api_key)
-        self.client = OpenAI(api_key=api_key)
+        
+        # Initialize components
+        self.llm_handler = LLMHandler(api_key=api_key)
         self.file_processor = FileProcessor()
         self.json_parser = JSONParser()
 
