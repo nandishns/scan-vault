@@ -100,7 +100,14 @@ export default function UploadPage() {
         <Alert variant="destructive" className="mt-4 max-w-md mx-auto">
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
+          <AlertDescription>An Error Occurred While Scanning Your File</AlertDescription>
+          <div className="mt-4">
+            <p className="text-sm text-muted-foreground">Possible reasons:</p>
+            <ul className="list-disc list-inside text-sm text-muted-foreground">
+              <li>File is too large</li>
+              <li>File is not supported</li>
+            </ul>
+          </div>
         </Alert>
       )}
 
