@@ -1,7 +1,5 @@
 ### **Documentation**
-
 ---
-
 ## **1. Task**
 **Objective:**  
 Develop a robust backend service to **scan files**, extract **sensitive data** (PII, PHI, PCI), and classify it using a combination of **Machine Learning (ML) models**, **regex-based patterns**, and **LLMs (ChatGPT)**. The service must:
@@ -155,6 +153,7 @@ cd project-root
   pip install -r requirements.txt
   ```
 
+
 ### **3. Configure Firestore**
 - Create a Firebase project and download the service account key.
 - Set the environment variable:
@@ -179,6 +178,18 @@ uvicorn app.main:app --reload
   ```bash
   pytest tests/
   ```
+---
+
+### **7. Run the Application with Docker**
+```bash
+# Build the Docker image
+docker build -t fastapi-scan-app .
+
+# Run the Docker container
+docker run -d -p 8000:8000 --name scan-app fastapi-scan-app
+
+```
+
 
 ---
 
