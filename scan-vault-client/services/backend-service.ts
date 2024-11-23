@@ -1,5 +1,4 @@
-const API_URL = 'https://scan-vault.onrender.com';
-
+const API_URL = process.env.ENDPOINT;
 
 export interface ScanResult {
   message: string;
@@ -16,6 +15,10 @@ export class BackendService {
 
     const response = await fetch(`${API_URL}/scan`, {
       method: 'POST',
+      headers: {
+        'access-token': process.env.ACCESS_TOKEN ?? '',
+        'Content-Type': 'multipart/form-data'
+      },
       body: formData,
     });
 
@@ -34,6 +37,7 @@ export class BackendService {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'access-token': process.env.ACCESS_TOKEN ?? ''
       },
       body: JSON.stringify(scanResult),
     });
@@ -44,7 +48,11 @@ export class BackendService {
   }
 
   static async fetchSavedResults(): Promise<any[]> {
-    const response = await fetch(`${API_URL}/get-saved-detections`);
+    const response = await fetch(`${API_URL}/get-saved-detections`, {
+      headers: {
+        'access-token': process.env.ACCESS_TOKEN ?? ''
+      }
+    });
     if (!response.ok) {
       throw new Error('Failed to fetch saved results: ' + (await response.text()));
     }
@@ -57,6 +65,9 @@ export class BackendService {
   static async deleteResult(id: string): Promise<void> {
     const response = await fetch(`${API_URL}/delete-detection/${id}`, {
       method: 'DELETE',
+      headers: {
+        'access-token': process.env.ACCESS_TOKEN ?? ''
+      }
     });
     if (!response.ok) {
       throw new Error('Failed to delete result: ' + (await response.text()));
