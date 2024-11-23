@@ -9,14 +9,17 @@ router = APIRouter()
 @router.post("/save-detection")
 async def save_detection(detection_data: Dict[str, Any]):
     try:
+        print(detection_data)
         # Validate required fields
-        if not detection_data or 'detectedContent' not in detection_data:
+        if not detection_data or 'sensitive_fields' not in detection_data:
             return {'error': 'Missing required data'}, 400
             
         # Create a new document in the 'detections' collection
         firebase_service = FirebaseService()
         doc_id = await firebase_service.save_detection({
-            'content': detection_data['detectedContent']
+            'fileName': detection_data['file_name'],
+            'sensitiveInfo': detection_data['sensitive_fields'],
+            'createdAt': firestore.SERVER_TIMESTAMP,
         })
         if not doc_id:
             return {'error': 'Failed to save detection'}, 500

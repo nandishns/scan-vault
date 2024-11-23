@@ -103,7 +103,8 @@ class AnalysisPrompts:
         If no sensitive information is found in a category, return an empty array for that category.
         Ensure all responses maintain proper formatting and include appropriate redaction of sensitive values.
         Make sure not to redact the detected value. its very important.
-        Dont add any other text or comments other than List response.
+        Dont add any other text or comments other than List response
+        .
     """
 
     SYSTEM_ROLE = "You are a data security expert specializing in identifying sensitive information."

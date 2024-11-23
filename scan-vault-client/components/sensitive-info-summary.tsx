@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { BackendService } from '@/services/backend-service';
 
 interface SensitiveInfoSummaryProps {
   results: {
@@ -15,6 +16,8 @@ export function SensitiveInfoSummary({ results }: SensitiveInfoSummaryProps) {
 
   const handleSave = () => {
     setIsSaved(true)
+    console.log('results:', results)
+    BackendService.saveResults(results)
   }
 
   // Transform the data for display

@@ -97,7 +97,7 @@ class ScanService:
         """Analyze image using GPT-4 Vision."""
         try:
             response = self.client.chat.completions.create(
-                model="gpt-4-vision-preview",
+                model="gpt-4o-2024-05-13",
                 messages=[
                     {
                         "role": "user",

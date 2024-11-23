@@ -1,19 +1,11 @@
-const API_URL = 'https://scan-vault.onrender.com';
+// const API_URL = 'https://scan-vault.onrender.com';
+const API_URL = 'http://localhost:8000';
 
 export interface ScanResult {
   message: string;
   results: {
     file_name: string;
-    sensitive_fields: {
-      pii: Array<{
-        type: string;
-        value: string;
-        confidence: string;
-        context: string;
-      }>;
-      phi: Array<any>;
-      pci: Array<any>;
-    };
+    sensitive_fields: any[];
   };
 }
 
@@ -36,15 +28,16 @@ export class BackendService {
     return data;
   }
 
-  static async saveResults(scanResult: ScanResult): Promise<void> {
-    const response = await fetch(`${API_URL}/save`, {
+  static async saveResults(scanResult: any): Promise<void> {
+    console.log('Saving results:', scanResult);
+    const response = await fetch(`${API_URL}/save-detection`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(scanResult),
     });
-
+    console.log('Response:', response);
     if (!response.ok) {
       throw new Error('Failed to save results: ' + (await response.text()));
     }
