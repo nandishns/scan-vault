@@ -54,7 +54,7 @@ export class BackendService {
   }
 
   static async fetchSavedResults(): Promise<any[]> {
-  
+    console.log('API_URL:', process.env.NEXT_PUBLIC_ACCESS_TOKEN);
     const response = await fetch(`${API_URL}/get-saved-detections`, {
       headers: {
         'access_token': process.env.NEXT_PUBLIC_ACCESS_TOKEN ?? ''
