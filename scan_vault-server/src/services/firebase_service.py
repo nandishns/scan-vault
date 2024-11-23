@@ -54,24 +54,24 @@ class FirebaseService:
             logger.error(f"Error saving detection: {str(e)}")
             return None
     
-    async def get_detection(self, detection_id: str) -> Optional[Dict[str, Any]]:
+    async def get_detections(self) -> Optional[Dict[str, Any]]:
         """
-        Retrieve a detection by ID
+        Retrieve all detections
         
-        Args:
-            detection_id (str): The ID of the detection to retrieve
-            
         Returns:
             Optional[Dict[str, Any]]: Detection data if found, None if not found
         """
         try:
-            doc_ref = self.db.collection('detections').document(detection_id)
-            doc = doc_ref.get()
+            docs = self.db.collection('detections').get()
+            detections = []
             
-            if doc.exists:
-                return doc.to_dict()
-            return None
+            for doc in docs:
+                detection = doc.to_dict()
+                detection['id'] = doc.id
+                detections.append(detection)
+                
+            return detections
             
         except Exception as e:
-            logger.error(f"Error retrieving detection: {str(e)}")
-            return None 
+            logger.error(f"Error retrieving detections: {str(e)}")
+            return None

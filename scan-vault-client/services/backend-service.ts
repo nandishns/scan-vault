@@ -42,4 +42,24 @@ export class BackendService {
       throw new Error('Failed to save results: ' + (await response.text()));
     }
   }
+
+  static async fetchSavedResults(): Promise<any[]> {
+    const response = await fetch(`${API_URL}/get-saved-detections`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch saved results: ' + (await response.text()));
+    }
+    const data = await response.json();
+    console.log('data:', data[0]['detections'])
+    
+    return data[0]['detections'];
+  }
+
+  static async deleteResult(id: number): Promise<void> {
+    const response = await fetch(`${API_URL}/delete-detection/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error('Failed to delete result: ' + (await response.text()));
+    }
+  }
 }
