@@ -20,28 +20,17 @@ class ScanService:
     
     def __init__(self,):
         """Initialize scan service with necessary components."""
-        self._validate_api_key(os.getenv("OPENAI_API_KEY"))
-        self.model_handler = self._initialize_model_handler(os.getenv("OPENAI_API_KEY"))
+        api_key = os.getenv("OPENAI_API_KEY")
+        self._validate_api_key(api_key)
+        self.client = OpenAI(api_key=api_key)
         self.file_processor = FileProcessor()
         self.json_parser = JSONParser()
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
     def _validate_api_key(self, api_key: str) -> None:
         """Validate OpenAI API key."""
         if not api_key:
             logger.error("OpenAI API key not found")
             raise ValueError("OpenAI API key is required")
-
-    def _initialize_model_handler(self, api_key: str) -> ModelHandler:
-        """Initialize the model handler."""
-        try:
-            return ModelHandler.create(
-                handler_type="gpt",
-                api_key=api_key
-            )
-        except Exception as e:
-            logger.error(f"Failed to initialize model handler: {e}")
-            raise ValueError(f"Model handler initialization failed: {e}")
 
     async def scan_file(self, file) -> Dict:
         """Handle end-to-end scanning process."""
@@ -52,7 +41,7 @@ class ScanService:
             file_extension = self.file_processor.get_file_extension(file.filename)
             
             # Process image files with Vision API
-            if file_extension in ["jpg", "jpeg", "png", "bmp"]:
+            if file_extension.lower() in ["jpg", "jpeg", "png", "bmp"]:
                 return await self._process_image(file)
             
             # Process text-based files
@@ -61,7 +50,20 @@ class ScanService:
                 logger.warning(f"No content extracted from file: {file.filename}")
                 return self._empty_result(file.filename)
 
-            results = self.model_handler.predict(content)
+            # Use OpenAI client directly instead of model_handler
+            response = await self.client.chat.completions.create(
+                model="gpt-4-turbo-preview",
+                messages=[
+                    {"role": "system", "content": AnalysisPrompts.SYSTEM_ROLE},
+                    {"role": "user", "content": AnalysisPrompts.TEXT_ANALYSIS + "\n\n" + content}
+                ],
+                max_tokens=1000
+            )
+            
+            # Parse the response
+            content = response.choices[0].message.content.strip()
+            results = self.json_parser.parse_gpt_response(content)
+            
             return {
                 "file_name": file.filename,
                 "sensitive_fields": results
