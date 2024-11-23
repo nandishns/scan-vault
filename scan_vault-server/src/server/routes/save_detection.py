@@ -1,12 +1,13 @@
+from fastapi import APIRouter, Depends
 from firebase_admin import firestore
-from fastapi import APIRouter
 from typing import Dict, Any
+from src.utils.auth import get_api_key
 
 from src.services.firebase_service import FirebaseService
 
 router = APIRouter()
 
-@router.post("/save-detection")
+@router.post("/save-detection", dependencies=[Depends(get_api_key)])
 async def save_detection(detection_data: Dict[str, Any]):
     try:
         print(detection_data)
