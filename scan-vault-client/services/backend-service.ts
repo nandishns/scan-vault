@@ -1,4 +1,9 @@
 const API_URL = "https://scan-vault.onrender.com";
+const ACCESS_TOKEN = process.env.NEXT_PUBLIC_ACCESS_TOKEN;
+
+if (!ACCESS_TOKEN) {
+  console.error('Access token is not configured!');
+}
 
 export interface ScanResult {
   message: string;
@@ -9,6 +14,22 @@ export interface ScanResult {
 }
 
 export class BackendService {
+  private static getHeaders(includeContentType: boolean = false): HeadersInit {
+    if (!ACCESS_TOKEN) {
+      throw new Error('Access token is not configured. Please check your environment variables.');
+    }
+
+    const headers: HeadersInit = {
+      'access_token': ACCESS_TOKEN
+    };
+
+    if (includeContentType) {
+      headers['Content-Type'] = 'application/json';
+    }
+
+    return headers;
+  }
+
   static async scanFile(file: File): Promise<ScanResult> {
     const formData = new FormData();
     formData.append('file', file);
@@ -16,9 +37,7 @@ export class BackendService {
     try {
       const response = await fetch(`${API_URL}/scan`, {
         method: 'POST',
-        headers: {
-          'access_token': process.env.NEXT_PUBLIC_ACCESS_TOKEN ?? '',
-        },
+        headers: this.getHeaders(),
         body: formData,
       });
 
@@ -28,9 +47,7 @@ export class BackendService {
         throw new Error(`Scan failed: ${JSON.stringify(errorData)}`);
       } 
 
-      const data = await response.json();
-      console.log('API Response:', data);
-      return data;
+      return await response.json();
     } catch (error) {
       console.error('Scan request failed:', error);
       throw error;
@@ -38,44 +55,36 @@ export class BackendService {
   }
 
   static async saveResults(scanResult: any): Promise<void> {
-    console.log('Saving results:', scanResult);
     const response = await fetch(`${API_URL}/save-detection`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'access_token': process.env.NEXT_PUBLIC_ACCESS_TOKEN ?? ''
-      },
+      headers: this.getHeaders(true),
       body: JSON.stringify(scanResult),
     });
-    console.log('Response:', response);
+
     if (!response.ok) {
       throw new Error('Failed to save results: ' + (await response.text()));
     }
   }
 
   static async fetchSavedResults(): Promise<any[]> {
-    console.log('API_URL:', process.env.NEXT_PUBLIC_ACCESS_TOKEN);
     const response = await fetch(`${API_URL}/get-saved-detections`, {
-      headers: {
-        'access_token': process.env.NEXT_PUBLIC_ACCESS_TOKEN ?? ''
-      }
+      headers: this.getHeaders()
     });
+
     if (!response.ok) {
       throw new Error('Failed to fetch saved results: ' + (await response.text()));
     }
+
     const data = await response.json();
-    console.log('data:', data[0]['detections'])
-    
     return data[0]['detections'];
   }
 
   static async deleteResult(id: string): Promise<void> {
     const response = await fetch(`${API_URL}/delete-detection/${id}`, {
       method: 'DELETE',
-      headers: {
-          'access-token': process.env.ACCESS_TOKEN ?? ''
-      }
+      headers: this.getHeaders()
     });
+
     if (!response.ok) {
       throw new Error('Failed to delete result: ' + (await response.text()));
     }
