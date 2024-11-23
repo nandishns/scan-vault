@@ -207,48 +207,6 @@ uvicorn app.main:app --reload
 
 ---
 
-## **Example API Flow**
-
-### **1. Scan a File**
-- **Endpoint:**
-  ```http
-  POST /scan
-  ```
-- **Request:**  
-  Upload a file (`example.pdf`).
-- **Response:**
-  ```json
-  {
-      "file_name": "example.pdf",
-      "sensitive_fields": [
-          {"field_name": "EMAIL", "value": "john.doe@example.com", "category": "PII"},
-          {"field_name": "DIAGNOSIS", "value": "Diabetes", "category": "PHI"}
-      ]
-  }
-  ```
-
-### **2. Retrieve Scan Results**
-- **Endpoint:**
-  ```http
-  GET /get-scans
-  ```
-- **Response:**
-  ```json
-  {
-      "message": "Scanned files retrieved successfully!",
-      "files": [
-          {
-              "file_name": "example.pdf",
-              "scan_results": [
-                  {"field_name": "EMAIL", "value": "john.doe@example.com", "category": "PII"}
-              ]
-          }
-      ]
-  }
-  ```
-
----
-
 ## **8. Conclusion**
 
 This project demonstrates backend engineering best practices:
