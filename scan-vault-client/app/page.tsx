@@ -17,7 +17,7 @@ export default function Home() {
             </p>
             <p className="text-lg mb-8 animate-fade-in animation-delay-400">
               ScanVault is software aiming to revolutionize data protection. We&apos;re leveraging the power of AI to create
-              <span className="font-bold"> cutting-edge sensitive data detection</span> for businesses of all sizes.
+              <span className="font-bold"> cutting-edge sensitive data detection</span>
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in animation-delay-600">
               <Button asChild size="lg" variant="default" className="bg-white text-black hover:bg-gray-200 transition-colors">
