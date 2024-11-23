@@ -1,120 +1,151 @@
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Union
 import logging
 from openai import OpenAI
-import json
-from abc import ABC, abstractmethod
+import base64
+from io import BytesIO
 from src.server.utils.analysis_prompts import AnalysisPrompts
 from src.server.utils.json_parser import JSONParser
 
 logger = logging.getLogger(__name__)
 
-class ModelInterface(ABC):
-    """Abstract base class for all model handlers."""
-    @abstractmethod
-    def predict(self, text: str) -> List[Dict]:
-        """Run predictions on the provided text."""
-        pass
-
+class LLMHandler:
+    """Handles all Large Language Model (LLM) interactions including text and vision analysis."""
     
-@DeprecationWarning
-class SpacyModelHandler(ModelInterface):
-    """Deprecated: Legacy Spacy-based model handler."""
-    def __init__(self, model_path: str):
-        import spacy  # Import here to make it optional
-        logger.warning("SpacyModelHandler is deprecated. Please use GPTModelHandler instead.")
-        self.nlp = spacy.load(model_path)
-    @DeprecationWarning
-    def predict(self, text: str) -> List[Dict]:
-        """Deprecated method using Spacy for predictions."""
-        doc = self.nlp(text)
-        results = []
-        for ent in doc.ents:
-            results.append({
-                "type": ent.label_,
-                "value": ent.text,
-                "confidence": "medium",
-                "context": "Found using deprecated Spacy model"
-            })
-        return results
-
-class GPTModelHandler(ModelInterface):
-    """Modern GPT-based model handler for sensitive information detection."""
-    def __init__(self, api_key: str, model: str = "gpt-4"):
+    def __init__(self, api_key: str):
+        """
+        Initialize the LLM handler.
+        
+        Args:
+            api_key (str): OpenAI API key for authentication
+            
+        Raises:
+            ValueError: If API key is invalid or initialization fails
+        """
         self._validate_api_key(api_key)
         self.client = self._initialize_client(api_key)
-        self.model = model
         self.json_parser = JSONParser()
 
     def _validate_api_key(self, api_key: str) -> None:
-        """Validate the API key."""
+        """
+        Validate the OpenAI API key.
+        
+        Args:
+            api_key (str): API key to validate
+            
+        Raises:
+            ValueError: If API key is missing or invalid
+        """
         if not api_key:
+            logger.error("OpenAI API key not provided")
             raise ValueError("OpenAI API key is required")
 
     def _initialize_client(self, api_key: str) -> OpenAI:
-        """Initialize the OpenAI client."""
+        """
+        Initialize the OpenAI client.
+        
+        Args:
+            api_key (str): Valid OpenAI API key
+            
+        Returns:
+            OpenAI: Initialized OpenAI client
+            
+        Raises:
+            ValueError: If client initialization fails
+        """
         try:
             return OpenAI(api_key=api_key)
         except Exception as e:
             logger.error(f"Failed to initialize OpenAI client: {e}")
-            raise ValueError(f"Failed to initialize OpenAI client: {e}")
+            raise ValueError(f"Failed to initialize OpenAI client: {str(e)}")
 
-    def predict(self, text: str) -> List[Dict]:
-        """Run GPT analysis on the provided text."""
+    def analyze_text(self, text: str) -> List[Dict]:
+        """
+        Analyze text content for sensitive information.
+        
+        Args:
+            text (str): Text content to analyze
+            
+        Returns:
+            List[Dict]: List of detected sensitive information
+            
+        Raises:
+            ValueError: If analysis fails
+        """
         try:
-            response = self._get_gpt_response(text)
+            logger.info("Starting text analysis")
+            response = self.client.chat.completions.create(
+                model="gpt-4-turbo-preview",
+                messages=[
+                    {"role": "system", "content": AnalysisPrompts.SYSTEM_ROLE},
+                    {"role": "user", "content": f"{AnalysisPrompts.TEXT_ANALYSIS}\n\n{text}"}
+                ],
+                max_tokens=1000
+            )
+            
             if not response.choices:
-                raise ValueError("No response received from GPT")
+                logger.error("No response received from GPT")
+                raise ValueError("No response received from model")
 
-            result = self.json_parser.parse_gpt_response(response.choices[0].message.content)
-            return self._flatten_results(result)
+            content = response.choices[0].message.content.strip()
+            results = self.json_parser.parse_gpt_response(content)
+            logger.info("Text analysis completed successfully")
+            return results
 
         except Exception as e:
-            logger.error(f"Error in GPT prediction: {e}")
-            raise ValueError(f"Failed to analyze text: {e}")
+            logger.error(f"Error in text analysis: {e}")
+            raise ValueError(f"Failed to analyze text: {str(e)}")
 
-    def _get_gpt_response(self, text: str):
-        """Get response from GPT model."""
-        return self.client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {"role": "system", "content": AnalysisPrompts.SYSTEM_ROLE},
-                {"role": "user", "content": f"{AnalysisPrompts.TEXT_ANALYSIS}\n\nText to analyze:\n{text}"}
-            ],
-            temperature=0.3,
-            max_tokens=1000
-        )
-
-    def _flatten_results(self, results: Dict) -> List[Dict]:
-        """Convert nested results into a flat list."""
-        flattened = []
-        # Handle case where results is already a list
-        if isinstance(results, list):
-            return results
+    def analyze_image(self, image_data: bytes) -> List[Dict]:
+        """
+        Analyze image content for sensitive information using Vision API.
+        
+        Args:
+            image_data (bytes): Raw image data
             
-        # Handle dictionary case
-        for category, items in results.items():
-            for item in items:
-                item['category'] = category.upper()
-                flattened.append(item)
-        return flattened
+        Returns:
+            List[Dict]: List of detected sensitive information
+            
+        Raises:
+            ValueError: If image analysis fails
+        """
+        try:
+            logger.info("Starting image analysis")
+            # Convert image to base64
+            img_str = base64.b64encode(image_data).decode()
+            
+            response = self.client.chat.completions.create(
+                model="gpt-4-vision-preview",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": AnalysisPrompts.TEXT_ANALYSIS},
+                            {
+                                "type": "image_url",
+                                "image_url": {
+                                    "url": f"data:image/jpeg;base64,{img_str}",
+                                    "detail": "high"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "role": "system",
+                        "content": AnalysisPrompts.SYSTEM_ROLE
+                    }
+                ],
+                max_tokens=1000
+            )
 
-class ModelHandler:
-    """Factory class for creating appropriate model handlers."""
-    @staticmethod
-    def create(handler_type: str = "gpt", **kwargs) -> ModelInterface:
-        """Create and return appropriate model handler."""
-        handlers = {
-            "gpt": lambda: GPTModelHandler(
-                api_key=kwargs.get('api_key'),
-                model=kwargs.get('model', 'gpt-4')
-            ),
-            "spacy": lambda: SpacyModelHandler(model_path=kwargs.get('model_path'))
-        }
+            if not response.choices:
+                logger.error("No response received from Vision API")
+                raise ValueError("No response received from model")
 
-        if handler_type not in handlers:
-            raise ValueError(f"Unknown handler type: {handler_type}")
+            content = response.choices[0].message.content.strip()
+            results = self.json_parser.parse_gpt_response(content)
+            logger.info("Image analysis completed successfully")
+            return results
 
-        if handler_type == "spacy":
-            logger.warning("Using deprecated Spacy model handler")
-
-        return handlers[handler_type]()
+        except Exception as e:
+            logger.error(f"Error in image analysis: {e}")
+            raise ValueError(f"Failed to analyze image: {str(e)}")
