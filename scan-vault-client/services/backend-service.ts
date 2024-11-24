@@ -89,4 +89,22 @@ export class BackendService {
       throw new Error('Failed to delete result: ' + (await response.text()));
     }
   }
+
+  static async pingServer(): Promise<boolean> {
+    try {
+      const response = await fetch(`${API_URL}/health`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        console.warn('Server health check failed:', await response.text());
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Server ping failed:', error);
+      return false;
+    }
+  }
 }

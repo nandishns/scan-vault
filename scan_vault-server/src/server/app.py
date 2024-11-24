@@ -7,6 +7,7 @@ from src.server.routes.scan import router as scan_router
 from src.server.routes.save_detection import router as save_detection_router
 from src.server.routes.get_detections import router as get_detections_router
 from src.server.routes.delete_detection import router as delete_detection_router
+from src.server.routes.health import router as health_router
 readme_content = read_markdown_file("README.md")
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -22,6 +23,7 @@ app = FastAPI(
 async def sync_database():
     logger.debug("starting up...")
 
+app.include_router(health_router, tags=["Health"])
 app.include_router(home_router, tags=["Home"])
 app.include_router(scan_router, tags=["Scan"]) 
 app.include_router(save_detection_router, tags=["Save Detection"])

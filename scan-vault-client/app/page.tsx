@@ -1,10 +1,26 @@
+'use client'
+
+
+import { useEffect } from 'react';
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowUpCircle, FileSearch, Lock, BarChart, Upload, FileText } from 'lucide-react'
 import { GridBackground } from "@/components/grid-background"
+import { BackendService } from '@/services/backend-service';
 
 export default function Home() {
+  useEffect(() => {
+    const warmupServer = async () => {
+      try {
+        await BackendService.pingServer();
+      } catch (error) {
+        console.error('Server warmup failed:', error);
+      }
+    };
+
+    warmupServer();
+  }, []);
   return (
     <div className="flex flex-col min-h-screen bg-black text-white">
       <header className="relative py-24 md:py-32 overflow-hidden">
