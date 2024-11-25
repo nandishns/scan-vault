@@ -145,61 +145,85 @@ scan_vault-client/
 ### **1. Clone the Repository**
 ```bash
 git clone https://github.com/nandishns/scan-vault/
-cd project-root
+cd scan-vault
 ```
 
-### **2. Set Up Dependencies**
-- Create a virtual environment:
-  ```bash
-  python3 -m venv venv
-  source venv/bin/activate
-  ```
-- Install Python dependencies:
-  ```bash
-  pip install -r requirements.txt
-  ```
+### **2. Server Setup**
+1. **Navigate to server directory:**
+   ```bash
+   cd scan_vault-server
+   ```
 
+2. **Set up Python environment:**
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows: .\venv\Scripts\activate
+   pip install -r requirements.txt
+   ```
 
-### **3. Configure Firestore**
-- Create a Firebase project and download the service account key.
-- Set the environment variable for Server:
-  ```bash
-SCAN_VAULT_API_KEY=
-OPENAI_API_KEY=
-  ```
-- Set the environment variable for Client:
+3. **Configure environment variables:**
+   - Create a `.env` file in the server directory:
+   ```bash
+   SCAN_VAULT_API_KEY=your_api_key
+   OPENAI_API_KEY=your_openai_key
+   ```
+
+4. **Start the server:**
+   ```bash
+   uvicorn src.main:app --reload
+   ```
+   The server will run on `http://localhost:8000`
+
+### **3. Client Setup**
+1. **Navigate to client directory:**
+   ```bash
+   cd scan_vault-client
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables:**
+   - Create a `.env.local` file in the client directory:
+   ```bash
+   ACCESS_TOKEN=your_access_token
+   ```
+
+4. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+   The client will run on `http://localhost:3000`
+
+### **4. Docker Setup (Optional)**
+To run the entire application using Docker:
+
 ```bash
-ACCESS_TOKEN=
-```
-
-### **4. Configure OpenAI API**
-- Add your OpenAI API key:
-  ```bash
-  export OPENAI_API_KEY="your-openai-api-key"
-  ```
-
-### **5. Run the Application**
-```bash
-uvicorn app.main:app --reload
-```
-
-### **6. Test the Application**
-- Run the test suite:
-  ```bash
-  pytest tests/
-  ```
----
-
-### **7. Run the Application with Docker**
-```bash
-# Build the Docker image
+# Build and run the server
+cd scan_vault-server
 docker build -t fastapi-scan-app .
-
-# Run the Docker container
 docker run -d -p 8000:8000 --name scan-app fastapi-scan-app
 
+# Build and run the client
+cd ../scan_vault-client
+docker build -t nextjs-scan-app .
+docker run --env-file .env.production -p 3000:3000 scan-vault-client
 ```
 
+### **5. Test the Application**
+- Run server tests:
+  ```bash
+  cd scan_vault-server
+  pytest tests/
+  ```
+
+- Run client tests:
+  ```bash
+  cd scan_vault-client
+  npm run test
+  ```
 
 ---
 
