@@ -1,6 +1,5 @@
 ### **Documentation**
 ---
-## **1. Task**
 **Objective:**  
 Develop a robust backend service to **scan files**, extract **sensitive data** (PII, PHI, PCI), and classify it using a combination of **Machine Learning (ML) models**, **regex-based patterns**, and **LLMs (ChatGPT)**. The service must:
 - Handle various file formats (e.g., PDF, TXT, DOCX, CSV, Images).
